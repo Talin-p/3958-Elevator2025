@@ -1,0 +1,68 @@
+package frc.robot.subsystems;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.VoltageOut;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Elevator extends SubsystemBase {
+  private TalonFX motor = new TalonFX(0); // Initialize TalonFX motor on CAN ID 0
+
+  // Control requests for setting motor output
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
+  private final VoltageOut voltageRequest = new VoltageOut(0);
+
+  // Set motor speed using duty cycle (percent output)
+  public void setMotorSpeed(double speed) {
+    motor.setControl(dutyCycleRequest.withOutput(speed));
+  }
+
+  // Set motor voltage directly
+  public void setMotorVoltage(double voltage) {
+    motor.setControl(voltageRequest.withOutput(voltage));
+  }
+
+  // Stop the motor
+  public void stopMotor() {
+    motor.setControl(dutyCycleRequest.withOutput(0));
+  }
+
+  // Methods to get motor stats as doubles
+  public double getMotorOutput() {
+    return motor.getMotorOutputStatus().getValue().value;
+  }
+
+  public double getMotorVelocity() {
+    return motor.getVelocity().getValueAsDouble();
+  }
+
+  public double getPosition() {
+    return motor.getPosition().getValueAsDouble();
+  }
+
+  public double getMotorCurrent() {
+    return motor.getStatorCurrent().getValueAsDouble();
+  }
+
+  public double getMotorVoltage() {
+    return motor.getSupplyVoltage().getValueAsDouble();
+  }
+
+  @Override
+  public void periodic() {
+    // Retrieve values from motor
+    double motorOutput = getMotorOutput();
+    double motorVelocity = getMotorVelocity();
+    double motorPosition = getPosition();
+    double motorCurrent = getMotorCurrent();
+    double motorVoltage = getMotorVoltage();
+
+    // Display values on SmartDashboard
+    SmartDashboard.putNumber("Elevator Motor Output", motorOutput);
+    SmartDashboard.putNumber("Elevator Motor Velocity", motorVelocity);
+    SmartDashboard.putNumber("Elevator Motor Position", motorPosition);
+    SmartDashboard.putNumber("Elevator Motor Current", motorCurrent);
+    SmartDashboard.putNumber("Elevator Motor Voltage", motorVoltage);
+  }
+}
