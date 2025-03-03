@@ -1,0 +1,48 @@
+package frc.robot;
+
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.Intake;
+import frc.robot.commands.ElevatorCommand;
+import frc.robot.subsystems.Coral;
+import frc.robot.subsystems.Elevator; 
+
+public class RobotContainer {
+    // Controllers
+    private final XboxController driverController = new XboxController(0);
+
+    // Subsystems
+    private final Coral CoralIntake = new Coral();
+    private final Elevator elevator = new Elevator();
+
+    public RobotContainer() {
+        configureButtonBindings(); // Configure button bindings
+    }
+
+    // Configure button bindings
+    private void configureButtonBindings() {
+        // Intake controls
+        new JoystickButton(driverController, XboxController.Button.kA.value)
+            .onTrue(new Intake(CoralIntake, 0.5));
+        new JoystickButton(driverController, XboxController.Button.kB.value)
+            .onTrue(new Intake(CoralIntake, -0.5));
+
+        // Elevator controls
+        new JoystickButton(driverController, XboxController.Button.kX.value)
+            .onTrue(new ElevatorCommand(elevator, 0)); // Move to stage 0 (bottom)
+        new JoystickButton(driverController, XboxController.Button.kY.value)
+            .onTrue(new ElevatorCommand(elevator, 1)); // Move to stage 1 (2 feet)
+        new JoystickButton(driverController, XboxController.Button.kLeftBumper.value)
+            .onTrue(new ElevatorCommand(elevator, 2)); // Move to stage 2 (4 feet)
+        new JoystickButton(driverController, XboxController.Button.kRightBumper.value)
+            .onTrue(new ElevatorCommand(elevator, 3)); // Move to stage 3 (6 feet)
+    }
+
+    
+    public Command getAutonomousCommand() {
+            return null;
+        // Example: Return an autonomous command (e.g., move elevator to stage 2)
+        // -->  return new ElevatorCommand(elevator, 2);   
+    }
+}
